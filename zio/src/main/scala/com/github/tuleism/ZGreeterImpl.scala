@@ -7,6 +7,7 @@ import sttp.client3._
 import sttp.client3.asynchttpclient.zio._
 import zio.duration._
 import zio.random._
+import zio.telemetry.opentelemetry.Tracing
 import zio.{RIO, ZIO}
 
 object ZGreeterImpl extends RGreeter[ZGreeterEnv] {
@@ -18,6 +19,9 @@ object ZGreeterImpl extends RGreeter[ZGreeterEnv] {
       _      <- ZIO.fail(Status.INVALID_ARGUMENT).when(guess < 0)
       code   <- nextIntBetween((rem + 1) * 100, (rem + 2) * 100)
       delayMs = if (rem == 2) 3000 + code else code / 10
+      _      <- Tracing.setAttribute("name", request.name)
+      _      <- Tracing.setAttribute("guess", guess)
+      _      <- Tracing.setAttribute("code", code)
       _      <- httpRequest(code)
                   .delay(delayMs.millis)
                   .mapError(ex => Status.INTERNAL.withCause(ex))
