@@ -1,5 +1,6 @@
 import Common._
 
+val izumiVersion         = "1.0.8"
 val grpcVersion          = "1.41.0"
 val openTelemetryVersion = "1.6.0"
 val sttpVersion          = "3.3.15"
@@ -13,6 +14,11 @@ val grpcRuntimeDeps = Seq(
   "io.grpc"      % "grpc-netty" % grpcVersion,
   scalaPBRuntime,
   scalaPBRuntime % "protobuf"
+)
+
+val loggingDeps = Seq(
+  "io.7mind.izumi" %% "logstage-core"          % izumiVersion,
+  "io.7mind.izumi" %% "logstage-adapter-slf4j" % izumiVersion
 )
 
 val openTelemetryDeps = Seq(
@@ -47,5 +53,5 @@ lazy val zio = commonProject("zio").settings(
     scalapb.gen(grpc = true)          -> (Compile / sourceManaged).value,
     scalapb.zio_grpc.ZioCodeGenerator -> (Compile / sourceManaged).value
   ),
-  libraryDependencies ++= grpcRuntimeDeps ++ openTelemetryDeps ++ sttpZioDeps ++ zioConfigDeps ++ zioMagicDeps ++ zioTelemetryDeps
+  libraryDependencies ++= grpcRuntimeDeps ++ loggingDeps ++ openTelemetryDeps ++ sttpZioDeps ++ zioConfigDeps ++ zioMagicDeps ++ zioTelemetryDeps
 )

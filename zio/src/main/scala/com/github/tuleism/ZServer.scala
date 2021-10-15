@@ -14,7 +14,8 @@ object ZServer extends ServerMain {
         AppConfig.live.narrow(_.tracing),
         ZTracer.live("hello-server"),
         Tracing.live,
-        SttpTracing.live
+        SttpTracing.live,
+        Logging.live
       )
       .orDie
 
